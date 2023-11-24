@@ -1,0 +1,76 @@
+class Student:
+    def __init__(self, student_id, name):
+        self.student_id = student_id
+        self.name = name
+        self.supervisor = None
+
+    def assign_supervisor(self, supervisor):
+        self.supervisor = supervisor
+
+    def __str__(self):
+        return f"Student {self.student_id}: {self.name}, Supervisor: {self.supervisor.name if self.supervisor else 'Not assigned'}"
+
+
+class Supervisor:
+    def __init__(self, supervisor_id, name):
+        self.supervisor_id = supervisor_id
+        self.name = name
+        self.students = []
+
+    def add_student(self, student):
+        self.students.append(student)
+
+    def __str__(self):
+        return f"Supervisor {self.supervisor_id}: {self.name}, Students: {', '.join([student.name for student in self.students])}"
+
+
+class ResearchManagementSystem:
+    def __init__(self):
+        self.students = []
+        self.supervisors = []
+
+    def add_student(self, student):
+        self.students.append(student)
+
+    def add_supervisor(self, supervisor):
+        self.supervisors.append(supervisor)
+
+    def allocate_supervisors(self):
+        for student in self.students:
+            available_supervisors = [supervisor for supervisor in self.supervisors if len(supervisor.students) < 2]
+            if available_supervisors:
+                selected_supervisor = min(available_supervisors, key=lambda x: len(x.students))
+                selected_supervisor.add_student(student)
+                student.assign_supervisor(selected_supervisor)
+
+
+# Example usage:
+
+# Create a research management system
+research_system = ResearchManagementSystem()
+
+# Add supervisors to the system
+supervisor1 = Supervisor(1, "Dr. Smith")
+supervisor2 = Supervisor(2, "Prof. Johnson")
+
+research_system.add_supervisor(supervisor1)
+research_system.add_supervisor(supervisor2)
+
+# Add students to the system
+student1 = Student(101, "Alice")
+student2 = Student(102, "Bob")
+student3 = Student(103, "Charlie")
+
+research_system.add_student(student1)
+research_system.add_student(student2)
+research_system.add_student(student3)
+
+# Allocate supervisors to students
+research_system.allocate_supervisors()
+
+# Print the information
+for student in research_system.students:
+    print(student)
+
+for supervisor in research_system.supervisors:
+    print(supervisor)
